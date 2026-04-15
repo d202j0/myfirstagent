@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My First Agent — You're not behind. You're just not there yet.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F5F0E8;
+      --ink: #1A1A18;
+      --warm-grey: #8C8880;
+      --accent: #C84B2F;
+      --accent-light: #E8927A;
+      --card-bg: #EDEAE2;
+      --border: #D4CFC6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.25rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    nav a {
+      font-size: 0.85rem;
+      color: var(--warm-grey);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--ink); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 7rem 2.5rem 5rem;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: var(--warm-grey);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 3.5rem;
+    }
+
+    /* ── WAITLIST FORM ── */
+    .waitlist-form {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .waitlist-form input[type="email"] {
+      flex: 1;
+      min-width: 240px;
+      padding: 0.9rem 1.2rem;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-form input[type="email"]::placeholder {
+      color: #B0AA9F;
+    }
+
+    .waitlist-form input[type="email"]:focus {
+      border-color: var(--accent);
+    }
+
+    .waitlist-form button {
+      padding: 0.9rem 1.8rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .waitlist-form button:hover {
+      background: #A83A20;
+      transform: translateY(-1px);
+    }
+
+    .waitlist-form button:active {
+      transform: translateY(0);
+    }
+
+    .form-note {
+      font-size: 0.78rem;
+      color: var(--warm-grey);
+      margin-top: 0.75rem;
+    }
+
+    .success-msg {
+      display: none;
+      padding: 1rem 1.4rem;
+      background: #E8F4E8;
+      border: 1.5px solid #A8D4A8;
+      border-radius: 4px;
+      color: #2A6A2A;
+      font-size: 0.95rem;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── WHO THIS IS FOR ── */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warm-grey);
+      margin-bottom: 2.5rem;
+      font-weight: 500;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.8rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--warm-grey);
+      line-height: 1.6;
+    }
+
+    /* ── HONEST SECTION ── */
+    .honest {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2.5rem 5rem;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    .honest-inner {
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 8px;
+      padding: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .honest-inner::before {
+      content: '"';
+      font-family: 'Instrument Serif', serif;
+      font-size: 20rem;
+      color: rgba(255,255,255,0.04);
+      position: absolute;
+      top: -4rem;
+      left: 1rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .honest-inner h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    .honest-inner h2 em {
+      color: var(--accent-light);
+      font-style: italic;
+    }
+
+    .honest-inner p {
+      font-size: 0.95rem;
+      color: #A8A49C;
+      line-height: 1.75;
+      max-width: 540px;
+      position: relative;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2.5rem 5rem;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 1.5rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+      line-height: 1;
+      opacity: 0.4;
+    }
+
+    .step-content h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .step-content p {
+      font-size: 0.9rem;
+      color: var(--warm-grey);
+      line-height: 1.65;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+      gap: 1rem;
+    }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--warm-grey);
+    }
+
+    footer a {
+      font-size: 0.8rem;
+      color: var(--warm-grey);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--ink); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      header { padding: 1.5rem; }
+      .hero, .section, .honest, .how { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .honest-inner { padding: 2rem; }
+      .waitlist-form { flex-direction: column; }
+      .waitlist-form input[type="email"],
+      .waitlist-form button { width: 100%; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">my<span>first</span>agent</a>
+    <nav>
+      <a href="#waitlist">Join the list</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <p class="hero-eyebrow">For the capable professional who feels vaguely left behind</p>
+    <h1>You're not bad at AI.<br/>You just haven't<br/><em>started yet.</em></h1>
+    <p class="hero-sub">
+      My First Agent is a guided experience for people who remember life before smartphones, built a career on actual skill, and find most AI content either baffling or embarrassing. No jargon. No coding. No pretending you've already done this.
+    </p>
+
+    <div id="waitlist">
+      <form class="waitlist-form" onsubmit="handleSubmit(event)">
+        <input type="email" id="email-input" placeholder="your@email.com" required autocomplete="email" />
+        <button type="submit">I'm in — tell me when it's ready</button>
+      </form>
+      <p class="form-note">No spam. No newsletter you didn't ask for. Just a nudge when it's live.</p>
+      <div class="success-msg" id="success-msg">
+        ✓ You're on the list. We'll be in touch when it's ready — which, with AI helping, shouldn't take long.
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <p class="section-label">Who this is for</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">📟</div>
+        <h3>You had a pager once</h3>
+        <p>You've lived through enough tech revolutions to be appropriately sceptical of this one. And yet something feels different this time.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏆</div>
+        <h3>You're good at your job</h3>
+        <p>20 years of actual experience. You've earned your seat at the table. You'd just like to keep it.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">😬</div>
+        <h3>AI feels like a party you missed</h3>
+        <p>Everyone's talking about it. Half of it sounds made up. You've tried ChatGPT once and it gave you something weird.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🙅</div>
+        <h3>You don't want to become a tech person</h3>
+        <p>You just want to not feel left behind. No bootcamp. No YouTube rabbit holes. Just something that actually works.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="honest">
+    <div class="honest-inner">
+      <h2>Honest disclaimer:<br/>I'm <em>figuring this out too.</em></h2>
+      <p>
+        I'm not an AI researcher. I'm a professional in my 40s who got curious, got stuck, broke through, and made a guided experience for colleagues who were where I was 18 months ago. They found it useful. So here we are. You don't need a guru. You need someone a few steps ahead who'll turn around and show you the path.
+      </p>
+    </div>
+  </div>
+
+  <section class="how">
+    <p class="section-label">How it works</p>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <div class="step-content">
+          <h3>You land here, mildly sceptical</h3>
+          <p>That's fine. Healthy, even. You've seen enough tech hype to know better than to get excited. Keep that energy.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <div class="step-content">
+          <h3>You go through a guided experience</h3>
+          <p>Not a course. Not a video. A conversation that walks you through building your first AI agent — step by step, in plain English, at your pace.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <div class="step-content">
+          <h3>Something clicks</h3>
+          <p>At some point it stops feeling like magic and starts feeling like a tool. A useful one. That moment is the whole point.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <div class="step-content">
+          <h3>You go back to your actual life</h3>
+          <p>Better equipped. Slightly smug at meetings. Under no obligation to become an AI person.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 myfirstagent.info — made by a human, with a little help</p>
+    <a href="mailto:hello@myfirstagent.info">hello@myfirstagent.info</a>
+  </footer>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('email-input').value;
+      const form = e.target;
+      const success = document.getElementById('success-msg');
+
+      // Store locally for now — replace with your email service endpoint
+      console.log('Waitlist signup:', email);
+
+      // In production, POST to your email service here:
+      // fetch('/api/waitlist', { method: 'POST', body: JSON.stringify({ email }) })
+
+      form.style.display = 'none';
+      success.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
